@@ -16,7 +16,7 @@ export const Ratings = ({ value }) => {
 		<Box
 			sx={{
 				display: "flex",
-				alignItems: "center",
+				// alignItems: "center",
 			}}>
 			<Rating
 				name="text-feedback"

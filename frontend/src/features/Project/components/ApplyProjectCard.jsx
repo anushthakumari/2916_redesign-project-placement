@@ -61,9 +61,9 @@ export const ProjectCard = ({
 	}, [assignments, projectid]);
 
 	const handleNavigate = (projectid) => {
-		if (!staff) {
-			navigate(`/project-details/${projectid}`);
-		}
+		// if (!staff) {
+		navigate(`/project-details/${projectid}`);
+		// }
 	};
 
 	const [editedProjectValue, setProjectValue] = useState({
@@ -166,7 +166,7 @@ export const ProjectCard = ({
 									</Stack>
 								</>
 							)}
-							{staff && (
+							{/* {staff && (
 								<Stack flexDirection={"row-reverse"}>
 									<IconButton
 										onClick={() => dispatch(deleteProjectByIdAsync(projectid))}>
@@ -183,7 +183,7 @@ export const ProjectCard = ({
 										</IconButton>
 									)}
 								</Stack>
-							)}
+							)} */}
 						</Stack>
 
 						{isEditing ? (
@@ -214,7 +214,7 @@ export const ProjectCard = ({
 						)}
 
 						<Stack flexDirection={"row"} mt={3} gap={2}>
-							<Stack flexDirection={"row"} alignItems={"center"}>
+							<Stack flexDirection={"row"} flex={1}>
 								<Typography variant="body2" fontWeight={300}>
 									Difficulty Rate:
 								</Typography>
@@ -233,35 +233,45 @@ export const ProjectCard = ({
 									<Ratings value={difficultyRating} />
 								)}
 							</Stack>
-							<Stack flexDirection={"row"} gap={1} flex={1}>
-								<Button
-									sx={{
-										borderRadius: "50px",
-										height: "30px",
-										flex: 1,
-									}}
-									size="small"
-									variant="contained"
-									disableElevation
-									fullWidth>
-									View
-								</Button>
-								<Button
-									sx={{
-										borderRadius: "50px",
-										height: "30px",
-										flex: 1,
-									}}
-									size="small"
-									variant="contained"
-									disableElevation
-									fullWidth>
-									Edit (Only For Staff)
-								</Button>
-							</Stack>
+							<Box flex={1}>
+								<Stack flexDirection={"row"} gap={1} flex={1}>
+									<ProjectButton onClick={() => handleNavigate(projectid)}>
+										View
+									</ProjectButton>
+									{staff ? (
+										isEditing ? (
+											<ProjectButton onClick={handleProjectUpdate}>
+												Save
+											</ProjectButton>
+										) : (
+											<ProjectButton onClick={handleEdit}>Edit</ProjectButton>
+										)
+									) : null}
+								</Stack>
+								<Stack mt={3} flexDirection={"row"} gap={1} flex={1}>
+									{staff ? (
+										<>
+											<ProjectButton>Sign To</ProjectButton>
+											<ProjectButton
+												onClick={() =>
+													dispatch(deleteProjectByIdAsync(projectid))
+												}>
+												Remove
+											</ProjectButton>
+										</>
+									) : (
+										<ProjectButton
+											size="small"
+											onClick={handleNavigate}
+											disabled={isProjectAlreadyApplied}>
+											{isProjectAlreadyApplied ? "Applied" : "Apply"}
+										</ProjectButton>
+									)}
+								</Stack>
+							</Box>
 						</Stack>
 					</CardContent>
-					<CardActions>
+					{/* <CardActions>
 						{staff ? (
 							isEditing ? (
 								<Button onClick={handleProjectUpdate} variant="contained">
@@ -280,9 +290,26 @@ export const ProjectCard = ({
 								{isProjectAlreadyApplied ? "Applied" : "Apply"}
 							</Button>
 						)}
-					</CardActions>
+					</CardActions> */}
 				</Card>
 			)}
 		</>
+	);
+};
+
+const ProjectButton = ({ children, ...rest }) => {
+	return (
+		<Button
+			sx={{
+				borderRadius: "50px",
+				height: "30px",
+				flex: 1,
+			}}
+			size="small"
+			variant="contained"
+			disableElevation
+			{...rest}>
+			{children}
+		</Button>
 	);
 };
