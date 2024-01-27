@@ -2,7 +2,7 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import { projectScreening } from "../../../assets";
-import { Box, Checkbox, FormHelperText, Stack } from "@mui/material";
+import { Box, Checkbox, Divider, FormHelperText, Stack } from "@mui/material";
 import { Navigate, Link as linkRoute } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { ErrorMessage } from "@hookform/error-message";
@@ -119,9 +119,9 @@ export const Signup = () => {
 									alignSelf={"center"}
 									variant="h5"
 									fontWeight={600}
-									mb={1}
+									mb={2}
 									color={"primary"}>
-									Project Management
+									Sign Up
 								</Typography>
 
 								{/* <Stack
@@ -196,6 +196,7 @@ export const Signup = () => {
 											placeholder="Name"
 											size="small"
 											fullWidth
+											aria-label="Name"
 										/>
 										<ErrorMessage
 											errors={errors}
@@ -211,6 +212,7 @@ export const Signup = () => {
 											placeholder="Matriculation ID"
 											type="number"
 											size="small"
+											aria-label="Matriculation ID"
 										/>
 										<ErrorMessage
 											errors={errors}
@@ -231,6 +233,7 @@ export const Signup = () => {
 											})}
 											placeholder="Entry Year"
 											type="number"
+											aria-label="Entry Year"
 											size="small"
 										/>
 										<ErrorMessage
@@ -482,13 +485,16 @@ export const Signup = () => {
 							</Button>
 						</Stack>
 
-						<Box mt={2}>
+						<Box mt={4}>
 							<span>Already a member?</span>
 							<Link component={linkRoute} to={"/login"} variant="body2">
 								{"Log in"}
 							</Link>
 						</Box>
-						<Copyright sx={{ mt: 5 }} />
+						<Box sx={{ mt: 5 }}>
+							<Divider />
+							<Copyright sx={{ mt: 2 }} />
+						</Box>
 					</Stack>
 				</Stack>
 			</Stack>

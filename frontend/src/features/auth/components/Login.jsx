@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import { ErrorMessage } from "@hookform/error-message";
 import { projectScreening } from "../../../assets";
 import Lottie from "lottie-react";
-import { InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { Divider, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { Navigate, Link as linkRoute } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,16 +26,18 @@ import logo from "../../../assets/logo/logo.jpg";
 
 function Copyright(props) {
 	return (
-		<Typography
-			variant="body2"
-			color="text.secondary"
-			align="center"
-			{...props}>
-			{"Copyright © "}
-			<Link color="inherit">Project Mangament Portal</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
+		<>
+			<Typography
+				variant="body2"
+				color="text.secondary"
+				align="center"
+				{...props}>
+				{"Copyright © "}
+				<Link color="inherit">Project Mangament Portal</Link>{" "}
+				{new Date().getFullYear()}
+				{"."}
+			</Typography>
+		</>
 	);
 }
 
@@ -119,45 +121,6 @@ export const Login = () => {
 							<MenuItem value="Student">Student</MenuItem>
 						</Select> */}
 
-						<FormControl
-							component="div"
-							style={{
-								display: "flex",
-								flexDirection: "row",
-								justifyContent: "flex-start",
-								alignItems: "center",
-								alignSelf: "flex-start",
-								margin: 0,
-								padding: 0,
-							}}>
-							<FormControlLabel
-								control={
-									<Checkbox
-										checked={selectedOption === "Student"}
-										onChange={handleRoleChange}
-									/>
-								}
-								label="Login as Student"
-								labelPlacement=""
-								// a11y props for screen readers
-								labelId="student-checkbox-label"
-								controlId="student-checkbox"
-							/>
-							<FormControlLabel
-								control={
-									<Checkbox
-										checked={selectedOption === "Staff"}
-										onChange={handleRoleChange}
-									/>
-								}
-								label="Login as Staff"
-								labelPlacement=""
-								// a11y props for screen readers
-								labelId="staff-checkbox-label"
-								controlId="staff-checkbox"
-							/>
-						</FormControl>
-
 						{/* feild and details container */}
 						<Box
 							component="form"
@@ -174,6 +137,44 @@ export const Login = () => {
 							})}
 							sx={{ mt: 1 }}>
 							<Stack>
+								<FormControl
+									component="div"
+									style={{
+										display: "flex",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
+										alignSelf: "flex-start",
+										marginBottom: "20px",
+										padding: 0,
+									}}>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={selectedOption === "Student"}
+												onChange={handleRoleChange}
+											/>
+										}
+										label="Login as Student"
+										labelPlacement=""
+										// a11y props for screen readers
+										labelId="student-checkbox-label"
+										controlId="student-checkbox"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={selectedOption === "Staff"}
+												onChange={handleRoleChange}
+											/>
+										}
+										label="Login as Staff"
+										labelPlacement=""
+										// a11y props for screen readers
+										labelId="staff-checkbox-label"
+										controlId="staff-checkbox"
+									/>
+								</FormControl>
 								<TextField
 									margin="normal"
 									type="number"
@@ -192,6 +193,11 @@ export const Login = () => {
 										}
 									)}
 									autoFocus
+									aria-label={
+										selectedOption === "Student"
+											? "Matriculation Id"
+											: "Staff Id"
+									}
 								/>
 								<ErrorMessage
 									errors={errors}
@@ -215,6 +221,7 @@ export const Login = () => {
 								label="Password"
 								type="password"
 								id="password"
+								aria-label="Password"
 							/>
 							<ErrorMessage
 								errors={errors}
@@ -223,35 +230,36 @@ export const Login = () => {
 									<span style={{ color: "red" }}> {message}</span>
 								)}
 							/>
+
+							<Button
+								type="submit"
+								fullWidth
+								variant="contained"
+								sx={{ mt: 1, mb: 2, height: "3rem" }}>
+								Login {selectedOption === "Staff" ? "as Staff" : "as Student"}
+							</Button>
+
 							<Grid
+								mt={2}
 								container
-								justifyContent={"flex-end"}
+								justifyContent={"space-between"}
 								alignContent={"center"}>
 								<Grid item>
 									<Link href="#" variant="body2">
 										Forgot password
 									</Link>
 								</Grid>
-							</Grid>
-
-							<Button
-								type="submit"
-								fullWidth
-								variant="contained"
-								sx={{ mt: 3, mb: 2, height: "3rem" }}>
-								Login {selectedOption === "Staff" ? "as Staff" : "as Student"}
-							</Button>
-
-							<Grid container justifyContent={"center"} alignContent={"center"}>
 								<Grid item>
-									<span>Don't have an account?</span>
 									<Link component={linkRoute} to={"/signup"} variant="body2">
 										{"Sign Up"}
 									</Link>
 								</Grid>
 							</Grid>
 
-							<Copyright sx={{ mt: 10 }} />
+							<Box sx={{ mt: 10 }}>
+								<Divider />
+								<Copyright sx={{ mt: 2 }} />
+							</Box>
 						</Box>
 					</Box>
 				</Stack>
