@@ -1,215 +1,497 @@
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-import {projectScreening} from '../../../assets'
-import {Checkbox, FormHelperText, Stack} from '@mui/material'
-import { Navigate, Link as linkRoute } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import Lottie from 'lottie-react';
-import {Select,MenuItem,InputLabel} from '@mui/material'
-import { useEffect, useState } from 'react';
-import {MuiCheckbox} from '../../../components/MuiCheckbox'
-import { DEGREES_COURSES, SUB_COURSES } from '../../../constants';
-import {FormControl,FormControlLabel} from '@mui/material'
-import { useForm } from "react-hook-form"
-import {useSelector,useDispatch} from 'react-redux'
-import { createStaffAsync, createStudentAsync, selectLoggedInUser } from '../AuthSlice';
-import logo from '../../../assets/logo/logo.jpg'
-
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import { projectScreening } from "../../../assets";
+import { Box, Checkbox, FormHelperText, Stack } from "@mui/material";
+import { Navigate, Link as linkRoute } from "react-router-dom";
+import Button from "@mui/material/Button";
+import { ErrorMessage } from "@hookform/error-message";
+import Lottie from "lottie-react";
+import { Select, MenuItem, InputLabel } from "@mui/material";
+import { useEffect, useState } from "react";
+import { MuiCheckbox } from "../../../components/MuiCheckbox";
+import { DEGREES_COURSES, SUB_COURSES } from "../../../constants";
+import { FormControl, FormControlLabel } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useSelector, useDispatch } from "react-redux";
+import {
+	createStaffAsync,
+	createStudentAsync,
+	selectLoggedInUser,
+} from "../AuthSlice";
+import logo from "../../../assets/logo/logo.jpg";
 
 function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit">
-        Project Mangament Portal
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
+	return (
+		<Typography
+			variant="body2"
+			color="text.secondary"
+			align="center"
+			{...props}>
+			{"Copyright © "}
+			<Link color="inherit">Project Mangament Portal</Link>{" "}
+			{new Date().getFullYear()}
+			{"."}
+		</Typography>
+	);
 }
 
+export const Signup = () => {
+	const isLoggedIn = useSelector(selectLoggedInUser);
+	const dispatch = useDispatch();
+	const {
+		register,
+		handleSubmit,
+		watch,
+		reset,
+		formState: { errors },
+	} = useForm();
+	const [isModuleLeader, setIsModuleLeader] = useState(false);
 
-export const Signup=()=> {
+	const [selectedOption, setSelectedOption] = useState("Staff");
+	const [alignment, setAlignment] = useState("web");
 
-    const isLoggedIn=useSelector(selectLoggedInUser)
-    const dispatch=useDispatch()
-  const { register,handleSubmit,watch,reset,formState: { errors },} = useForm()
-  const [isModuleLeader,setIsModuleLeader]=useState(false)
+	const [selectedDegree, setSelectedDegree] = useState();
+	const [selectedSubCourse, setSelectedSubCourse] = useState();
+	const [selectedType, setSelectedType] = useState();
+	const handleChange = (event, newAlignment) => {
+		setAlignment(newAlignment);
+	};
 
-  const [selectedOption,setSelectedOption]=useState("Staff")
-  const [alignment, setAlignment] = useState('web');
+	const handleRoleChange = (event) => {
+		setSelectedOption(selectedOption === "Staff" ? "Student" : "Staff");
+	};
 
-  const [selectedDegree,setSelectedDegree]=useState()
-  const [selectedSubCourse,setSelectedSubCourse]=useState()
-  const [selectedType,setSelectedType]=useState()
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
+	useEffect(() => {
+		reset();
+	}, [selectedOption]);
 
-  useEffect(()=>{
-    reset()
-  },
-  [selectedOption])
+	return (
+		<>
+			{isLoggedIn && <Navigate to={"/"} replace={true}></Navigate>}
+			<Stack flexDirection={"row"} height={"100vh"}>
+				{/* left container */}
+				<Lottie animationData={projectScreening} />
 
-  return (
-    <>
-    {isLoggedIn && <Navigate to={'/'} replace={true}></Navigate>}
-    <Stack flexDirection={'row'} height={'100vh'}>
-      
-      {/* left container */}
-      <Lottie animationData={projectScreening}/>
+				{/* rigght container */}
+				<Stack
+					flexDirection={"column"}
+					justifyContent={"center"}
+					alignItems={"center"}>
+					{/* Image container */}
+					<Stack width={"300px"}>
+						<img
+							src={logo}
+							style={{ width: "100%", height: "100%", objectFit: "contain" }}
+							alt="logo-university"
+						/>
+					</Stack>
 
-      {/* rigght container */}
-      <Stack flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+					{/* feild and details container */}
+					<Stack justifyContent={"center"} alignItems={"center"}>
+						<Stack
+							component={"form"}
+							noValidate
+							width={"30rem"}
+							spacing={2}
+							onSubmit={handleSubmit((data) => {
+								if (selectedOption === "Student") {
+									const studentData = { ...data };
+									if (studentData.modeType === null) {
+										studentData.modeType = "part-time";
+									}
+									console.log(studentData);
+									dispatch(createStudentAsync(data));
+								} else {
+									const signupdata = { ...data };
+									delete signupdata.confirmPassword;
 
-            {/* Image container */}
-            <Stack width={'500px'}>
-              <img src={logo} style={{width:"100%",height:"100%",objectFit:"contain"}} alt="logo-university" />
-            </Stack>
+									if (data.moduleLeader === false) {
+										signupdata.moduleId = "none";
+									}
+									console.log("cleaned data", signupdata);
+									dispatch(createStaffAsync(signupdata));
+								}
+							})}>
+							<Stack flexDirection={"column"} justifyContent={"space-around"}>
+								<Typography
+									justifySelf={"center"}
+									alignSelf={"center"}
+									variant="h5"
+									fontWeight={600}
+									mb={1}
+									color={"primary"}>
+									Project Management
+								</Typography>
 
-            {/* feild and details container */}
-            <Stack justifyContent={'center'} alignItems={'center'}>
+								{/* <Stack
+									mt={2}
+									flexDirection={"row"}
+									justifyContent={"center"}
+									alignItems={"center"}>
+									<InputLabel sx={{ mr: 1 }}>Select Role</InputLabel>
+									<Select
+										label="Select Role"
+										value={selectedOption}
+										onChange={() =>
+											setSelectedOption(
+												selectedOption === "Staff" ? "Student" : "Staff"
+											)
+										}>
+										<MenuItem value="Staff">Staff</MenuItem>
+										<MenuItem value="Student">Student</MenuItem>
+									</Select>
+								</Stack> */}
+								<FormControl
+									component="div"
+									style={{
+										display: "flex",
+										flexDirection: "row",
+										justifyContent: "flex-start",
+										alignItems: "center",
+										alignSelf: "flex-start",
+										margin: 0,
+										padding: 0,
+									}}>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={selectedOption === "Student"}
+												onChange={handleRoleChange}
+											/>
+										}
+										label="Register as Student"
+										labelPlacement=""
+										// a11y props for screen readers
+										labelId="student-checkbox-label"
+										controlId="student-checkbox"
+									/>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={selectedOption === "Staff"}
+												onChange={handleRoleChange}
+											/>
+										}
+										label="Register as Staff"
+										labelPlacement=""
+										// a11y props for screen readers
+										labelId="staff-checkbox-label"
+										controlId="staff-checkbox"
+									/>
+								</FormControl>
+							</Stack>
+							{selectedOption === "Student" ? (
+								<>
+									<Stack width={"100%"}>
+										<TextField
+											{...register("name", {
+												required: "name is required",
+												pattern: {
+													message: "Please enter valid name",
+													value:
+														/^[a-zA-Z\u00C0-\u017F]+(?:\s[a-zA-Z\u00C0-\u017F]+)*$/,
+												},
+											})}
+											placeholder="Name"
+											size="small"
+											fullWidth
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"name"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
+									<Stack>
+										<TextField
+											{...register("id", { required: "id is required" })}
+											placeholder="Matriculation ID"
+											type="number"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"id"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
+									<Stack>
+										<TextField
+											{...register("entryYear", {
+												required: "year is required",
+												pattern: {
+													message: "Please enter valid year",
+													value: /^[0-9]{4}$/,
+												},
+											})}
+											placeholder="Entry Year"
+											type="number"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"entryYear"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
 
-            <Stack component={'form'} noValidate  width={"30rem"} spacing={2} onSubmit={handleSubmit((data)=>{
-                if(selectedOption==='Student'){
-                    const studentData={...data}
-                    if(studentData.modeType===null){
-                        studentData.modeType='part-time'
-                    }
-                    console.log(studentData)
-                    dispatch(createStudentAsync(data))
-                }
-                else{
-                    const signupdata={...data}
-                    delete signupdata.confirmPassword
+									<Stack flexDirection={"row"}>
+										{/* select degree */}
+										<FormControl size="small" fullWidth>
+											<InputLabel id="demo-simple-select-label">
+												Select Degree
+											</InputLabel>
+											<Select
+												{...register("degree", {
+													required: "degree is required",
+												})}
+												labelId="demo-simple-select-label"
+												id="demo-simple-select"
+												value={selectedDegree}
+												onChange={(e) => setSelectedDegree(e.target.value)}>
+												{DEGREES_COURSES.map((item, index) => (
+													<MenuItem value={item} key={index}>
+														{item}
+													</MenuItem>
+												))}
+											</Select>
+											<ErrorMessage
+												errors={errors}
+												name={"degree"}
+												render={({ message }) => (
+													<span style={{ color: "red" }}> {message}</span>
+												)}
+											/>
+										</FormControl>
 
-                    if(data.moduleLeader===false){
-                        signupdata.moduleId='none'
-                    }
-                    console.log('cleaned data',signupdata)
-                    dispatch(createStaffAsync(signupdata))
-                }
-            })}>
+										{/* sub courses */}
+										<FormControl size="small" fullWidth>
+											<InputLabel id="demo-simple-select-label">
+												Sub Courses
+											</InputLabel>
+											<Select
+												{...register("subCourse", {
+													required: "sub courses is required",
+												})}
+												labelId="demo-simple-select-label"
+												id="demo-simple-select"
+												value={selectedSubCourse}
+												onChange={(e) => setSelectedSubCourse(e.target.value)}>
+												{SUB_COURSES[selectedDegree]?.map((item, index) => (
+													<MenuItem value={item} key={index}>
+														{item}
+													</MenuItem>
+												))}
+											</Select>
+											<ErrorMessage
+												errors={errors}
+												name={"subCourse"}
+												render={({ message }) => (
+													<span style={{ color: "red" }}> {message}</span>
+												)}
+											/>
+										</FormControl>
+									</Stack>
 
-                <Stack flexDirection={'column'} justifyContent={"space-around"}>
+									<Stack>
+										<FormControl size="small" fullWidth>
+											<InputLabel id="demo-simple-select-label">
+												Select Type
+											</InputLabel>
+											<Select
+												{...register("modeType", {
+													required: "mode type is required",
+												})}
+												onChange={(e) => setSelectedSubCourse(e.target.value)}>
+												<MenuItem value={"part-time"}>Part Time</MenuItem>
+												<MenuItem value={"full-time"}>Full time</MenuItem>
+											</Select>
+											<ErrorMessage
+												errors={errors}
+												name={"modeType"}
+												render={({ message }) => (
+													<span style={{ color: "red" }}> {message}</span>
+												)}
+											/>
+										</FormControl>
+									</Stack>
 
-                      <Typography justifySelf={'center'} alignSelf={'center'} variant='h4' fontWeight={600} color={'primary'}>Project Management</Typography>
+									<Stack>
+										<TextField
+											{...register("password", {
+												required: "password is required",
+											})}
+											placeholder="Password"
+											type="password"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"password"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
+									<Stack>
+										<TextField
+											placeholder="Confirm Password"
+											type="password"
+											size="small"
+											{...register("confirmPassword", {
+												required: true,
+												validate: (value, formValues) =>
+													value === formValues.password ||
+													`Password dosen't match`,
+											})}
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"confirmPassword"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
+								</>
+							) : (
+								// if staff
+								<>
+									<Stack>
+										<TextField
+											{...register("name", {
+												required: "name is required",
+												pattern: {
+													message: "Please enter valid name",
+													value:
+														/^[a-zA-Z\u00C0-\u017F]+(?:\s[a-zA-Z\u00C0-\u017F]+)*$/,
+												},
+											})}
+											placeholder="Name"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"name"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
+									<Stack>
+										<TextField
+											type="number"
+											{...register("staffId", {
+												required: "staffId is required",
+											})}
+											placeholder="Staff ID"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"staffId"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
 
-                      <Stack mt={2} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-                      <InputLabel sx={{mr:1}}>Select Role</InputLabel>
-                      <Select
-                        label="Select Role"
-                        value={selectedOption}
-                        onChange={()=>setSelectedOption(selectedOption==='Staff'?"Student":"Staff")}
-                      >
-                        <MenuItem value="Staff">Staff</MenuItem>
-                        <MenuItem value="Student">Student</MenuItem>
-                      </Select>
-                      </Stack>
+									<Stack>
+										<TextField
+											{...register("email", { required: "email is required" })}
+											placeholder="Email"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"email"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
 
+									<FormControlLabel
+										control={
+											<Checkbox
+												{...register("moduleLeader")}
+												onChange={() => setIsModuleLeader(!isModuleLeader)}
+											/>
+										}
+										label="Check this, If you are a Module Leader"
+									/>
+									{isModuleLeader && (
+										<>
+											<TextField
+												type="number"
+												{...register("moduleId", { required: isModuleLeader })}
+												placeholder="Module ID"
+												size="small"
+											/>
+											<FormHelperText sx={{ color: "red" }}>
+												{errors?.moduleTitle?.message}
+											</FormHelperText>
+										</>
+									)}
+									<Stack>
+										<TextField
+											{...register("password", { required: true })}
+											placeholder="Password"
+											type="password"
+											size="small"
+										/>
+										<ErrorMessage
+											errors={errors}
+											name={"password"}
+											render={({ message }) => (
+												<span style={{ color: "red" }}> {message}</span>
+											)}
+										/>
+									</Stack>
+									<Stack>
+										<TextField
+											{...register("confirmPassword", {
+												required: true,
+												validate: (value, formValues) =>
+													value === formValues.password ||
+													`Password dosen't match`,
+											})}
+											placeholder="Confirm Password"
+											type="password"
+											size="small"
+										/>
+										<FormHelperText sx={{ color: "red" }}>
+											{errors.confirmPassword?.message}
+										</FormHelperText>
+									</Stack>
+								</>
+							)}
+							<Button
+								size="small"
+								type="submit"
+								variant="contained"
+								sx={{ height: "2.5rem" }}>
+								Signup
+							</Button>
+						</Stack>
 
-                </Stack>
-                {
-                  selectedOption==='Student'?(
-                    <>
-                    <Stack flexDirection={'row'} width={'100%'}>
-                      <TextField {...register("name",{required:"name is required"})} placeholder='Name' fullWidth/>
-                    </Stack>
-                    <TextField {...register("id",{required:"id is required"})}  placeholder='Matriculation ID' type='number'/>
-                    <TextField {...register("entryYear",{required:"year is required"})} placeholder='Entry Year' type='number'/>
-
-                    <Stack flexDirection={'row'}>
-
-                      {/* select degree */}
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">Select Degree</InputLabel>
-                          <Select {...register("degree",{required:"degree is required"})} labelId="demo-simple-select-label" id="demo-simple-select" value={selectedDegree}
-                            onChange={(e)=>setSelectedDegree(e.target.value)}
-                          >
-                            {
-                              DEGREES_COURSES.map((item,index)=><MenuItem value={item} key={index}>{item}</MenuItem>)
-                            }
-                          </Select>
-                        </FormControl>
-
-                      {/* sub courses */}
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">Sub Courses</InputLabel>
-                          <Select {...register("subCourse",{required:"sub courses is required"})} labelId="demo-simple-select-label" id="demo-simple-select" value={selectedSubCourse}
-                            onChange={(e)=>setSelectedSubCourse(e.target.value)}
-                          >
-                            {
-                              SUB_COURSES[selectedDegree]?.map((item,index)=><MenuItem value={item} key={index}>{item}</MenuItem>)
-                            }
-                          </Select>
-                        </FormControl>
-
-
-
-                    </Stack>
-
-                    <Stack>
-                    
-                    <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">Select Type</InputLabel>
-                          <Select {...register("modeType",{required:"mode type is required"})}
-                            onChange={(e)=>setSelectedSubCourse(e.target.value)}
-                          >
-                            
-                             <MenuItem value={'part-time'}>Part Time</MenuItem>
-                             <MenuItem value={'full-time'}>Full time</MenuItem>
-                            
-                          </Select>
-                        </FormControl>
-                    
-
-
-                    </Stack>
-
-                    <Stack>
-
-                    </Stack>
-                    <TextField {...register("password",{required:"passoword is required"})} placeholder='Password' type='password'/>
-                    <TextField placeholder='Confirm Password' type='password'/>
-                    </>
-                  ):(
-                    // if staff
-                    <>
-                    <TextField {...register("name", { required: 'name is required'})}  placeholder='Name'/>
-                    <FormHelperText>{errors.name?.message}</FormHelperText>
-                    <TextField type='number' {...register("staffId", { required: 'staffId is required'})} placeholder='Staff ID'/>
-                    <FormHelperText>{errors.staffId?.message}</FormHelperText>
-                    <TextField {...register("email", { required: 'email is required'})} placeholder='Email'/>
-                    <FormControlLabel control={<Checkbox {...register("moduleLeader")} onChange={()=>setIsModuleLeader(!isModuleLeader)}/>} label="Check this, If you are a Module Leader"/>
-                    {
-                      isModuleLeader && (
-                        <>
-                        <TextField type='number' {...register("moduleId",{required:isModuleLeader})} placeholder='Module ID'/>
-                        <FormHelperText>{errors?.moduleTitle?.message}</FormHelperText></>
-                      )
-                    }
-                    <TextField {...register("password",{required:true})} placeholder='Password' type='password'/>
-                    <TextField {...register("confirmPassword",{required:true,validate:(value,formValues)=>value===formValues.password || `Password dosen't match`})} placeholder='Confirm Password' type='password'/>
-                    <FormHelperText>{errors.confirmPassword?.message}</FormHelperText>
-                    
-                    </>
-                  )
-                }
-                <Button type='submit' variant='contained' sx={{height:'3rem'}}>Signup</Button>
-            </Stack>
-            
-            <Link component={linkRoute} mt={2} to={'/login'} variant="body2">
-                    {"Already a member? Log in"}
-            </Link>
-            <Copyright sx={{ mt: 5 }} />
-
-            </Stack>
-
-
-        </Stack>
-        
-      </Stack></>
-  );
-}
+						<Box mt={2}>
+							<span>Already a member?</span>
+							<Link component={linkRoute} to={"/login"} variant="body2">
+								{"Log in"}
+							</Link>
+						</Box>
+						<Copyright sx={{ mt: 5 }} />
+					</Stack>
+				</Stack>
+			</Stack>
+		</>
+	);
+};
