@@ -50,7 +50,7 @@ export const Login = () => {
 		reset,
 		formState: { errors },
 	} = useForm();
-	const [selectedOption, setSelectedOption] = useState("Student");
+	const [selectedOption, setSelectedOption] = useState("Staff");
 
 	const handleRoleChange = (event) => {
 		setSelectedOption(selectedOption === "Staff" ? "Student" : "Staff");
@@ -250,7 +250,10 @@ export const Login = () => {
 									</Link>
 								</Grid>
 								<Grid item>
-									<Link component={linkRoute} to={"/signup"} variant="body2">
+									<Link
+										component={linkRoute}
+										to={"/staff/signup"}
+										variant="body2">
 										{"Sign Up"}
 									</Link>
 								</Grid>

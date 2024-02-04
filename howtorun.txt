@@ -1,0 +1,26 @@
+install nodejs if not installed by going to following url:
+https://nodejs.org/en/download
+
+
+=========installing dependencies===================
+open command prompt in the backend folder and type below command:
+npm install
+
+open command prompt in the frontend folder and type below command:
+npm install
+
+==============DB setup==============================
+open file /backend/db/mysql.js and change db configuration at line 19 and save it
+
+=============email setup============================
+-> open file /backend/controllers/Project.js at line 5 and 6 give your email and app password
+-> watch below youtube video to know how to get gmail app password
+https://youtu.be/LyOSGLM46mE?si=v-bX1gfh8ILVW0_z&t=26
+
+
+=============starting the project===================
+open command prompt in the backend folder and type below command to start the backend:
+npm start
+
+open command prompt in the frontend folder and type below command to start the frontend:
+npm start

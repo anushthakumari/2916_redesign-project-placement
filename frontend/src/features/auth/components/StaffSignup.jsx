@@ -48,7 +48,7 @@ export const Signup = () => {
 	} = useForm();
 	const [isModuleLeader, setIsModuleLeader] = useState(false);
 
-	const [selectedOption, setSelectedOption] = useState("Student");
+	const [selectedOption, setSelectedOption] = useState("Staff");
 	const [alignment, setAlignment] = useState("web");
 
 	const [selectedDegree, setSelectedDegree] = useState();
@@ -487,7 +487,7 @@ export const Signup = () => {
 
 						<Box mt={4}>
 							<span>Already a member?</span>
-							<Link component={linkRoute} to={"/login"} variant="body2">
+							<Link component={linkRoute} to={"/staff/login"} variant="body2">
 								{"Log in"}
 							</Link>
 						</Box>

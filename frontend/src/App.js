@@ -21,7 +21,10 @@ import {
 	StaffProfilePage,
 	StudentProfilePage,
 } from "./pages";
+
 import { ProctectedStudent } from "./features/auth/components/ProtectedStudent";
+import { Signup as StaffSignup } from "./features/auth/components/StaffSignup";
+import { Login as StaffLogin } from "./features/auth/components/StaffLogin";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -60,6 +63,8 @@ function App() {
 						/>
 						<Route exact path="/login" element={<LoginPage />} />
 						<Route exact path="/signup" element={<SignupPage />} />
+						<Route exact path="/staff/login" element={<StaffLogin />} />
+						<Route exact path="/staff/signup" element={<StaffSignup />} />
 						<Route exact path="/editprofile" element={<EditProfilePage />} />
 						<Route exact path="/apply" element={<ApplyPage />} />
 						<Route exact path="/profile/staff" element={<StaffProfilePage />} />

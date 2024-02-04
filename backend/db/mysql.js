@@ -51,7 +51,7 @@ const createAssignmentTable = async (connection) => {
       projectId INT NOT NULL,
       FOREIGN KEY (studentId) REFERENCES students(id),
       FOREIGN KEY (projectId) REFERENCES projects(id)
-    ) ENGINE=InnoDB;
+    );
   `);
 };
 

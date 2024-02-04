@@ -32,6 +32,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { axiosInstance } from "../../Staff/StaffApi";
+import { toast } from "react-toastify";
 
 const style = {
 	position: "absolute",
@@ -342,7 +343,7 @@ export const ProjectDetails = () => {
 									try {
 										setisLoading(true);
 										const res = await axiosInstance.post(
-											"/projects/send-mail",
+											"http://localhost:8000/projects/send-mail",
 											{
 												receivermail: project?.supervisorEmail,
 												subject: data.subject,
@@ -350,7 +351,7 @@ export const ProjectDetails = () => {
 											}
 										);
 
-										if (res.status !== 200) {
+										if (res.status === 200) {
 											reset();
 											dispatch(
 												createAssignmentAsync({
@@ -358,12 +359,15 @@ export const ProjectDetails = () => {
 													projectId: id,
 												})
 											);
-											alert(`Applied on ${project?.projectTitle} successfully`);
+
+											toast.success(
+												`Applied on ${project?.projectTitle} successfully`
+											);
 											navigate("/");
 										}
 									} catch (error) {
 										console.log(error);
-										alert("Something went wrong while sending email!");
+										toast.error("Something went wrong while sending email!");
 									} finally {
 										setisLoading(false);
 									}
