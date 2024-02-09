@@ -50,7 +50,7 @@ const style = {
 	borderRadius: ".8rem",
 };
 
-export const ProjectDetails = () => {
+export const ProjectDetailsGet = () => {
 	const {
 		register,
 		handleSubmit,
@@ -171,10 +171,22 @@ export const ProjectDetails = () => {
 							{/* <Card> */}
 							{/* <CardContent> */}
 
-							<Stack my={1}>
+							<Stack my={1} gap={"8px"}>
+								<Stack alignItems={"center"} flexDirection={"row"} gap={1}>
+									<Typography
+										variant="body1"
+										color="text.secondary"
+										component="div">
+										Project Id:
+									</Typography>
+									<Typography variant="body1" fontWeight={600}>
+										{project?.id}
+									</Typography>
+								</Stack>
 								<Typography variant={"h4"} fontWeight={700}>
 									{project?.projectTitle}
 								</Typography>
+								<Typography variant="body">{project?.description}</Typography>
 								<Typography
 									sx={{ fontSize: 14 }}
 									color="text.secondary"
@@ -186,12 +198,10 @@ export const ProjectDetails = () => {
 							</Stack>
 							<Divider />
 
-							<Stack minHeight={"50px"} my={2}>
-								<Typography variant="body">{project?.description}</Typography>
-							</Stack>
-							<Divider />
+							{/* <Stack minHeight={"50px"} my={2}></Stack> */}
+							<Divider thickness={3} />
 
-							<Stack flexDirection={"row"} my={3} alignItems={"center"} gap={2}>
+							{/* <Stack flexDirection={"row"} my={3} alignItems={"center"} gap={2}>
 								<Stack alignItems={"center"} flexDirection={"row"} gap={1}>
 									<Typography
 										variant="body1"
@@ -224,9 +234,13 @@ export const ProjectDetails = () => {
 										</Typography>
 									</Stack>
 								</Stack>
-							</Stack>
-							<Divider />
-							<Stack flexDirection={"row"} alignItems={"center"} gap={2} my={3}>
+							</Stack> */}
+							{/* <Divider /> */}
+							<Stack
+								flexDirection={"column"}
+								// alignItems={"center"}
+								gap={1}
+								my={4}>
 								<Stack flexDirection={"row"} alignItems={"center"} gap={1}>
 									<Typography
 										variant="body1"
@@ -237,10 +251,6 @@ export const ProjectDetails = () => {
 
 									<Ratings value={project?.difficultyRating} />
 								</Stack>
-							</Stack>
-							<Divider />
-
-							<Stack flexDirection={"row"} alignItems={"center"} gap={2} my={3}>
 								<Stack flexDirection={"row"} alignItems={"center"} gap={1}>
 									<Typography
 										variant="body1"
@@ -253,26 +263,48 @@ export const ProjectDetails = () => {
 										{project.techStack}
 									</Typography>
 								</Stack>
+								<Stack flexDirection={"row"} alignItems={"center"} gap={1}>
+									<Typography
+										variant="body1"
+										color="text.secondary"
+										fontWeight={300}>
+										Capacity:
+									</Typography>
+
+									<Typography variant="body1" fontWeight={600}>
+										0/5
+									</Typography>
+								</Stack>
 							</Stack>
-
 							<Divider />
-
-							{/* </CardContent> */}
-							{/* <CardActions> */}
-							{/* <Button
-								size="small"
-								disabled={isProjectAlreadyApplied}
-								sx={{
-									width: "200px",
-								}}
-								onClick={() => {
-									setEmailModal(true);
-								}}
-								variant="contained">
-								{isProjectAlreadyApplied ? "Applied✅" : "apply"}
-							</Button> */}
-							{/* </CardActions> */}
-							{/* </Card> */}
+						</Stack>
+						<Stack gap={1} my={4}>
+							<Stack flexDirection={"row"} alignItems={"center"} gap={1}>
+								<Typography
+									variant="body1"
+									color="text.secondary"
+									component="div">
+									Supervisior Name:
+								</Typography>
+								<Stack gap={1} direction={"row"} alignItems={"center"}>
+									<Typography variant="body1" fontWeight={600} component="div">
+										{project?.supervisorName}
+									</Typography>
+								</Stack>
+							</Stack>
+							<Stack flexDirection={"row"} alignItems={"center"} gap={1}>
+								<Typography
+									variant="body1"
+									color="text.secondary"
+									component="div">
+									Supervisior Email:
+								</Typography>
+								<Stack gap={1} direction={"row"} alignItems={"center"}>
+									<Typography variant="body1" fontWeight={600} component="div">
+										{project?.supervisorEmail}
+									</Typography>
+								</Stack>
+							</Stack>
 						</Stack>
 
 						{/* <Stack mt={5} alignSelf={"flex-start"} spacing={2}>
@@ -285,21 +317,8 @@ export const ProjectDetails = () => {
 							</Stack>
 						</Stack> */}
 
-						<Stack flexDirection={"row"} alignItems={"center"} gap={2} my={3}>
-							<Stack flexDirection={"row"} alignItems={"center"} gap={1}>
-								<Typography
-									variant="body1"
-									color="text.secondary"
-									fontWeight={300}>
-									Capacity:
-								</Typography>
-
-								<Typography variant="body1" fontWeight={600}>
-									0/5
-								</Typography>
-							</Stack>
-						</Stack>
 						<Divider />
+
 						{isStaff ? null : (
 							<Stack direction={"row"} gap={2}>
 								<ProjectButton
@@ -373,7 +392,7 @@ export const ProjectDetails = () => {
 								onClose={handleClose}
 								TransitionComponent={transition}
 								message={`Applied on ${project?.projectTitle} successfully`}
-								key={transition ? transition.name : ""}
+								key={transition ? transition?.name : ""}
 							/>
 						</Box>
 					</Stack>

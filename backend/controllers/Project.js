@@ -2,8 +2,8 @@ const { connectoToDb, connection } = require("../db/mysql");
 const Project = require("../model/Projects");
 const nodemailer = require("nodemailer");
 
-const mailId = "enter email here";
-const mailPassword = "enter gmail app password here";
+const mailId = "ryan.user21@gmail.com";
+const mailPassword = "mpig iytq ckbo wsrv";
 
 const transporter = nodemailer.createTransport({
 	service: "gmail",
