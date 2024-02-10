@@ -8,13 +8,13 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import ProjectProgressBar from "./ProjectProgressBar";
-import { IconButton, Stack } from "@mui/material";
+import { Divider, IconButton, Stack } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteAssingmentByIdAsync } from "../features/assignments/AssignmentSlice";
 import { selectLoggedInUser } from "../features/auth/AuthSlice";
 
-export const AssignedProjectCard = ({
+export const AssignedProjectCardHCI = ({
 	data,
 	projectName,
 	dateJoined,
@@ -25,8 +25,6 @@ export const AssignedProjectCard = ({
 	problemStatement,
 }) => {
 	const loggedInUser = useSelector(selectLoggedInUser);
-
-	console.log(data);
 
 	const navigate = useNavigate();
 
@@ -77,6 +75,8 @@ export const AssignedProjectCard = ({
 						</Typography> */}
 					</Stack>
 
+					<Divider />
+
 					{/* teacher name */}
 					{/* <Typography sx={{ mb: 1.5 }} color="text.secondary">
 						{supservisorName}
@@ -93,6 +93,7 @@ export const AssignedProjectCard = ({
 						</Stack>
 						<ProjectProgressBar completedPercentage={completedPercentage} />
 					</Box>
+					<Divider />
 					<Box my={2}>
 						<Stack flexDirection={"row"} gap={2}>
 							<Stack gap={1} direction={"row"} alignItems={"center"}>
@@ -120,6 +121,7 @@ export const AssignedProjectCard = ({
 							</Stack>
 						</Stack>
 					</Box>
+					<Divider />
 				</Stack>
 
 				{/* project problem statement */}
