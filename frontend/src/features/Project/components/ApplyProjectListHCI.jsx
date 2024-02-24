@@ -71,6 +71,7 @@ export const ApplyProjectListHCI = () => {
 												problemStatement={data.description}
 												difficultyRating={data.difficultyRating}
 												key={data.id}
+												data={data}
 											/>
 										);
 									})}

@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -18,14 +20,36 @@ import {
 	TextField,
 	Avatar,
 	Divider,
+	Modal,
 } from "@mui/material";
+
 import {
 	deleteProjectByIdAsync,
 	updateProjectByIdAsync,
 } from "../ProjectSlice";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import { ErrorMessage } from "@hookform/error-message";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { axiosInstance } from "../../Staff/StaffApi";
+import { createAssignmentAsync } from "../../assignments/AssignmentSlice";
+import { selectLoggedInUser } from "../../auth/AuthSlice";
+import CloseIcon from "@mui/icons-material/Close";
+import { useDropzone } from "react-dropzone";
+const style = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	width: 400,
+	bgcolor: "background.paper",
+	boxShadow: 24,
+	p: 4,
+	borderRadius: ".8rem",
+};
 
 export const ProjectCard = ({
 	wholeProjectData,
@@ -36,12 +60,55 @@ export const ProjectCard = ({
 	postedDateTime,
 	projectid,
 	staff = false,
+	data,
 }) => {
 	const assignments = useSelector((state) => state.AssignmentSlice.assignments);
-	console.log(assignments);
+	const {
+		register,
+		handleSubmit,
+		reset,
+		watch,
+		formState: { errors },
+	} = useForm();
+
+	const loggedInUser = useSelector(selectLoggedInUser);
+
+	const onDrop = useCallback((acceptedFiles) => {
+		if (acceptedFiles.length) {
+			const file = acceptedFiles[0];
+
+			const fd = new FormData();
+
+			fd.append("file", file);
+			fd.append("studentId", loggedInUser.id);
+			fd.append("projectId", projectid);
+
+			axiosInstance
+				.post("http://localhost:8000/upload-report", fd, {
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				})
+				.then(() => {
+					toast.success("Report Submitted Successfully!");
+				})
+				.catch((e) => {
+					toast.error("Something went wrong!");
+				});
+		}
+	}, []);
+
+	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+		accept: {
+			"application/pdf": [".pdf"],
+		},
+		maxFiles: 1,
+		onDrop,
+	});
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	const [isEditing, setIsEditing] = useState(false);
+	const [isLoading, setisLoading] = useState(false);
 
 	const shortText = problemStatement.slice(0, 100);
 	const dispatch = useDispatch();
@@ -53,6 +120,12 @@ export const ProjectCard = ({
 	const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
 
 	const [isProjectAlreadyApplied, setIsProjectAlreadyApplied] = useState(false);
+	const [emailModal, setEmailModal] = useState({
+		open: false,
+		isApply: false,
+	});
+
+	const [openUploader, setopenUploader] = useState(false);
 	const [statusChecked, setStatusChecked] = useState(false);
 
 	useEffect(() => {
@@ -106,6 +179,10 @@ export const ProjectCard = ({
 		setProjectValue({ ...editedProjectValue, [e.target.name]: e.target.value });
 	};
 
+	const handleApply = () => {
+		setEmailModal({ open: true, isApply: true });
+	};
+
 	return (
 		<>
 			{assignments && statusChecked && (
@@ -115,12 +192,8 @@ export const ProjectCard = ({
 						mt: 2,
 						cursor: staff ? "" : isProjectAlreadyApplied ? "" : "pointer",
 					}}
-					onClick={() =>
-						staff
-							? ""
-							: isProjectAlreadyApplied
-							? null
-							: navigate(`/project-details/${projectid}`)
+					onClick={
+						() => (staff ? "" : isProjectAlreadyApplied ? null : "") //navigate(`/project-details/${projectid}`)
 					}>
 					<CardContent>
 						<Stack mb={2}>
@@ -138,8 +211,13 @@ export const ProjectCard = ({
 							<Typography variant={"h6"} fontWeight={700}>
 								{projectTitle}
 							</Typography>
+							<Typography variant={"body"} fontWeight={200}>
+								{data?.description}
+							</Typography>
 							<Typography
-								sx={{ fontSize: 14 }}
+								style={{
+									fontSize: "12px",
+								}}
 								color="text.secondary"
 								gutterBottom>
 								{Math.abs(hoursDifference) === 0
@@ -272,21 +350,46 @@ export const ProjectCard = ({
 								)}
 							</Stack>
 						</Stack>
+						<Stack flexDirection={"row"} my={3} gap={2}>
+							<Stack flexDirection={"row"} gap={1} flex={1}>
+								<Typography
+									variant="body1"
+									color="text.secondary"
+									fontWeight={300}>
+									Required Skills:
+								</Typography>
+								<Typography variant="body1" fontWeight={600} component="div">
+									{data?.techStack}
+								</Typography>
+							</Stack>
+						</Stack>
 
 						<Divider />
 
 						<Stack
 							mt={2}
-							justifyContent={"flex-end"}
 							direction={"row"}
+							justifyContent={"space-between"}
 							alignItems={"center"}
+							width={"100%"}
 							gap={1}
 							flex={1}>
-							<Stack flexDirection={"row"} gap={1}>
+							<Stack direction={"row"} gap={1}>
 								<ProjectButton
 									endIcon={<KeyboardDoubleArrowRightIcon />}
 									onClick={() => handleNavigate(projectid)}>
-									Click Here to know more
+									know more
+								</ProjectButton>
+								<ProjectButton
+									onClick={handleApply}
+									color="success"
+									endIcon={<AssignmentIcon />}>
+									Apply
+								</ProjectButton>
+								<ProjectButton
+									style={{ minWidth: "250px" }}
+									onClick={() => setopenUploader(true)}>
+									UPLOAD Assignment/Report
 								</ProjectButton>
 								{staff ? (
 									isEditing ? (
@@ -344,6 +447,134 @@ export const ProjectCard = ({
 					</CardActions> */}
 				</Card>
 			)}
+
+			<Modal
+				id="applyform"
+				open={emailModal.open}
+				onClose={() => setEmailModal({ open: false, isApply: false })}
+				aria-labelledby="send-an-email-to-supervisor">
+				<Box sx={style}>
+					<IconButton
+						size="small"
+						onClick={() => setEmailModal({ open: false, isApply: false })}
+						sx={{
+							backgroundColor: "#333",
+							color: "white",
+							ml: "92%",
+						}}
+						aria-label="close">
+						<CloseIcon />
+					</IconButton>
+					<Typography
+						id="send-an-email-to-supervisor"
+						variant="h6"
+						component="h2">
+						{"Send An Apply Email to The Supervisor"}
+					</Typography>
+					<Stack
+						mt={2}
+						spacing={2}
+						component={"form"}
+						onSubmit={handleSubmit(async (fd) => {
+							try {
+								setisLoading(true);
+								const res = await axiosInstance.post(
+									"http://localhost:8000/projects/send-mail",
+									{
+										receivermail: data?.supervisorEmail,
+										subject: fd.subject,
+										body: fd.body,
+									}
+								);
+
+								if (res.status === 200) {
+									reset();
+									dispatch(
+										createAssignmentAsync({
+											studentId: loggedInUser?.id,
+											projectId: projectid,
+										})
+									);
+
+									toast.success(`Applied on ${projectTitle} successfully`);
+									navigate("/");
+								} else {
+									toast.success("Successfully sent!");
+								}
+							} catch (error) {
+								console.log(error);
+								toast.error("Something went wrong while sending email!");
+							} finally {
+								setisLoading(false);
+							}
+						})}>
+						<TextField
+							aria-label="Email Subject"
+							aria-required="true"
+							label="Email Subject"
+							{...register("subject", {
+								required: "Please fill the subject field",
+								minLength: {
+									value: 10,
+									message: "Subject is too short",
+								},
+							})}
+							placeholder="Subject"></TextField>
+						<ErrorMessage
+							errors={errors}
+							name="subject"
+							render={({ message }) => (
+								<p style={{ color: "red" }}> {message}</p>
+							)}
+						/>
+						<TextField
+							aria-label="Email Body"
+							aria-required="true"
+							label="Email Body"
+							{...register("body", {
+								required: "Please fill the body field",
+								minLength: {
+									value: 10,
+									message: "Email Body is too short",
+								},
+							})}
+							multiline
+							rows={5}
+							placeholder="Body"></TextField>
+						<ErrorMessage
+							errors={errors}
+							name="body"
+							render={({ message }) => (
+								<p style={{ color: "red" }}> {message}</p>
+							)}
+						/>
+						<Button type="submit" variant="contained" disabled={isLoading}>
+							{isLoading ? "Loading..." : "Send Email"}
+						</Button>
+					</Stack>
+				</Box>
+			</Modal>
+			<Modal open={openUploader} onClose={() => setopenUploader(false)}>
+				<Box sx={style}>
+					<div
+						style={{
+							border: "1px dashed #333",
+							padding: "20px",
+							borderRadius: "15px",
+						}}>
+						<div {...getRootProps({ className: "dropzone" })}>
+							<input {...getInputProps()} />
+							<p>Drag 'n' drop some files here, or click to select files,</p>
+							<p
+								style={{
+									marginTop: "6px",
+								}}>
+								<strong>Only Pdf is allowed.</strong>
+							</p>
+						</div>
+					</div>
+				</Box>
+			</Modal>
 		</>
 	);
 
@@ -554,7 +785,7 @@ const ProjectButton = ({ children, ...rest }) => {
 				borderRadius: "50px",
 				height: "40px",
 				flex: 1,
-				minWidth: "100px",
+				minWidth: "38%",
 			}}
 			size="small"
 			variant="contained"

@@ -70,7 +70,7 @@ function App() {
 				}}
 				padding={"4px"}
 				bgcolor={"primary"}>
-				<Typography>Getsalt Law</Typography>
+				<Typography>Gestalt Law</Typography>
 				<Switch
 					size="small"
 					checked={uiState === "hci"}

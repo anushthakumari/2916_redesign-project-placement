@@ -34,6 +34,8 @@ export const AssignedProjectCardHCI = ({
 		dispatch(deleteAssingmentByIdAsync(assingmentId));
 	};
 
+	console.log(data);
+
 	const [isExpanded, setIsExpanded] = React.useState(false);
 
 	return (
@@ -67,12 +69,12 @@ export const AssignedProjectCardHCI = ({
 						<Typography variant="h6" fontWeight={700}>
 							{projectName}
 						</Typography>
-						{/* <Typography
+						<Typography
 							sx={{ fontSize: 14 }}
 							color="text.secondary"
 							gutterBottom>
-							{formateDate(dateJoined)}
-						</Typography> */}
+							{problemStatement}
+						</Typography>
 					</Stack>
 
 					<Divider />

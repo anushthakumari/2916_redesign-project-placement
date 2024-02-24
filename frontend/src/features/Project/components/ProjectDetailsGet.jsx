@@ -416,6 +416,7 @@ export const ProjectDetailsGet = () => {
 							<Typography
 								id="send-an-email-to-supervisor"
 								variant="h6"
+								fontWeight={600}
 								component="h2">
 								{emailModal.isApply
 									? "Send An Apply Email to The Supervisor"
@@ -437,7 +438,7 @@ export const ProjectDetailsGet = () => {
 											}
 										);
 
-										if (res.status === 200) {
+										if (res.status === 200 && emailModal.isApply) {
 											reset();
 											dispatch(
 												createAssignmentAsync({
@@ -450,6 +451,8 @@ export const ProjectDetailsGet = () => {
 												`Applied on ${project?.projectTitle} successfully`
 											);
 											navigate("/");
+										} else {
+											toast.success("Successfully sent!");
 										}
 									} catch (error) {
 										console.log(error);
@@ -458,46 +461,52 @@ export const ProjectDetailsGet = () => {
 										setisLoading(false);
 									}
 								})}>
-								<TextField
-									aria-label="Email Subject"
-									aria-required="true"
-									label="Email Subject"
-									{...register("subject", {
-										required: "Please fill the subject field",
-										minLength: {
-											value: 10,
-											message: "Subject is too short",
-										},
-									})}
-									placeholder="Subject"></TextField>
-								<ErrorMessage
-									errors={errors}
-									name="subject"
-									render={({ message }) => (
-										<p style={{ color: "red" }}> {message}</p>
-									)}
-								/>
-								<TextField
-									aria-label="Email Body"
-									aria-required="true"
-									label="Email Body"
-									{...register("body", {
-										required: "Please fill the body field",
-										minLength: {
-											value: 10,
-											message: "Email Body is too short",
-										},
-									})}
-									multiline
-									rows={5}
-									placeholder="Body"></TextField>
-								<ErrorMessage
-									errors={errors}
-									name="body"
-									render={({ message }) => (
-										<p style={{ color: "red" }}> {message}</p>
-									)}
-								/>
+								<Stack>
+									<Typography>Email Subject:</Typography>
+									<TextField
+										aria-label="Email Subject"
+										aria-required="true"
+										// label="Email Subject"
+										{...register("subject", {
+											required: "Please fill the subject field",
+											minLength: {
+												value: 10,
+												message: "Subject is too short",
+											},
+										})}
+										placeholder="Type Email Subject Here..."></TextField>
+									<ErrorMessage
+										errors={errors}
+										name="subject"
+										render={({ message }) => (
+											<p style={{ color: "red" }}> {message}</p>
+										)}
+									/>
+								</Stack>
+								<Stack>
+									<Typography>Email Body:</Typography>
+									<TextField
+										aria-label="Email Body"
+										aria-required="true"
+										// label="Email Body"
+										{...register("body", {
+											required: "Please fill the body field",
+											minLength: {
+												value: 10,
+												message: "Email Body is too short",
+											},
+										})}
+										multiline
+										rows={5}
+										placeholder="Type Your Message Here...."></TextField>
+									<ErrorMessage
+										errors={errors}
+										name="body"
+										render={({ message }) => (
+											<p style={{ color: "red" }}> {message}</p>
+										)}
+									/>
+								</Stack>
 								<Button type="submit" variant="contained" disabled={isLoading}>
 									{isLoading ? "Loading..." : "Send Email"}
 								</Button>

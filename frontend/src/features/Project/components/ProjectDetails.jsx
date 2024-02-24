@@ -324,25 +324,7 @@ export const ProjectDetails = () => {
 										? "Applied✅"
 										: "apply to this project"}
 								</ProjectButton>
-								<ProjectButton
-									startIcon={<CloudUploadIcon />}
-									size="large"
-									color="secondary"
-									sx={{
-										minWidth: "200px",
-										maxWidth: "400px",
-										marginTop: "20px",
-										backgroundColor: "#999999",
-										// margn
-									}}
-									onClick={() => {
-										setopenUploader(true);
-									}}
-									variant="contained"
-									aria-haspopup="dialog"
-									aria-label="Upload CV">
-									{"UPLOAD CV"}
-								</ProjectButton>
+
 								<ProjectButton
 									onClick={() => {
 										setEmailModal({
@@ -418,7 +400,7 @@ export const ProjectDetails = () => {
 											}
 										);
 
-										if (res.status === 200) {
+										if (res.status === 200 && emailModal.isApply) {
 											reset();
 											dispatch(
 												createAssignmentAsync({
@@ -431,6 +413,8 @@ export const ProjectDetails = () => {
 												`Applied on ${project?.projectTitle} successfully`
 											);
 											navigate("/");
+										} else {
+											toast.success("Successfully sent!");
 										}
 									} catch (error) {
 										console.log(error);

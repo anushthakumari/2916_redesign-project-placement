@@ -12,6 +12,7 @@ const initializeTables = async (connection) => {
 	await createStaffTable(connection);
 	await createProjectTable(connection);
 	await createAssignmentTable(connection);
+	await createReportTable(connection);
 };
 
 const connectoToDb = async () => {
@@ -98,6 +99,19 @@ const createStudentTable = async (connection) => {
       entryYear VARCHAR(255) NOT NULL,
       modeType VARCHAR(255) NOT NULL
     );
+  `);
+};
+
+const createReportTable = async (connection) => {
+	await connection.execute(`
+    CREATE TABLE IF NOT EXISTS reports (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      studentId INT,
+      projectId INT NOT NULL,
+      upload_path varchar(200) NOT null,
+      FOREIGN KEY (studentId) REFERENCES students(id),
+      FOREIGN KEY (projectId) REFERENCES projects(id)
+  );
   `);
 };
 
